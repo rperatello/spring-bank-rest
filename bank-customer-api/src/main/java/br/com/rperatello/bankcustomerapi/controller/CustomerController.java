@@ -52,7 +52,6 @@ public class CustomerController {
 	}
 	
 	@PutMapping(
-			value = "/{id}",
 			consumes = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML  },
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML  }
 	)
