@@ -1,4 +1,4 @@
-package br.com.rperatello.springbankrest.service;
+package br.com.rperatello.bankcustomerapi.services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,7 @@ import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
-import br.com.rperatello.springbankrest.model.Customer;
-import br.com.rperatello.springbankrest.model.ICustomerService;
+import br.com.rperatello.bankcustomerapi.model.Customer;
 
 //
 

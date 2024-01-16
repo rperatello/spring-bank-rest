@@ -1,4 +1,4 @@
-package br.com.rperatello.springbankrest.model;
+package br.com.rperatello.bankcustomerapi.model;
 
 public class MediaType {
 

@@ -1,4 +1,4 @@
-package br.com.rperatello.springbankrest.controller;
+package br.com.rperatello.bankcustomerapi.controller;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.rperatello.springbankrest.model.Customer;
-import br.com.rperatello.springbankrest.model.ICustomerService;
-import br.com.rperatello.springbankrest.model.MediaType;
+import br.com.rperatello.bankcustomerapi.model.Customer;
+import br.com.rperatello.bankcustomerapi.model.MediaType;
+import br.com.rperatello.bankcustomerapi.services.ICustomerService;
 
 @RestController
 @RequestMapping("/api/customer/v1")

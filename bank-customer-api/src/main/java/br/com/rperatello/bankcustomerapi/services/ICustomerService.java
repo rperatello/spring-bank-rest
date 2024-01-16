@@ -1,6 +1,8 @@
-package br.com.rperatello.springbankrest.model;
+package br.com.rperatello.bankcustomerapi.services;
 
 import java.util.List;
+
+import br.com.rperatello.bankcustomerapi.model.Customer;
 
 public interface ICustomerService {
 
