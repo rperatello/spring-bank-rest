@@ -2,17 +2,18 @@ package br.com.rperatello.bankcustomerapi.services;
 
 import java.util.List;
 
-import br.com.rperatello.bankcustomerapi.model.Customer;
+import br.com.rperatello.bankcustomerapi.data.vo.v1.CustomerRequestVO;
+import br.com.rperatello.bankcustomerapi.data.vo.v1.CustomerResponseVO;
 
 public interface ICustomerService {
 
-	Customer findById(Long id);
+	CustomerResponseVO findById(Long id);
 	
-	List<Customer> getAll();	
+	List<CustomerResponseVO> getAll();	
 	
-	Customer createNewCustomer(Customer customer);
+	CustomerResponseVO createNewCustomer(CustomerRequestVO customer);
 	
-	Customer updateCustomer(Customer customer);
+	CustomerResponseVO updateCustomer(CustomerRequestVO customer);
 	
 	void deleteCustomer(Long id);
 	

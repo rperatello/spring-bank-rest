@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.rperatello.bankcustomerapi.model.Customer;
+import br.com.rperatello.bankcustomerapi.data.vo.v1.CustomerRequestVO;
+import br.com.rperatello.bankcustomerapi.data.vo.v1.CustomerResponseVO;
 import br.com.rperatello.bankcustomerapi.model.MediaType;
 import br.com.rperatello.bankcustomerapi.services.ICustomerService;
 
@@ -28,7 +29,7 @@ public class CustomerController {
 	@GetMapping(
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML }
 	)
-	public List<Customer> getAll() {
+	public List<CustomerResponseVO> getAll() {
 		var res = customerService.getAll();
 		return res;
 	}
@@ -37,7 +38,7 @@ public class CustomerController {
 			value = "/{id}",
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML }
 	)
-	public Customer findById(@PathVariable(value = "id") Long id) {
+	public CustomerResponseVO findById(@PathVariable(value = "id") Long id) {
 		var res = customerService.findById(id);
 		return res;
 	}
@@ -46,7 +47,7 @@ public class CustomerController {
 			consumes = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML  },
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML  }
 	)
-	public Customer createNewCustomer(@RequestBody Customer customer) {
+	public CustomerResponseVO createNewCustomer(@RequestBody CustomerRequestVO customer) {
 		var res = customerService.createNewCustomer(customer);
 		return res;
 	}
@@ -55,7 +56,7 @@ public class CustomerController {
 			consumes = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML  },
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML  }
 	)
-	public Customer updateCustomer(@RequestBody Customer customer) {
+	public CustomerResponseVO updateCustomer(@RequestBody CustomerRequestVO customer) {
 		var res = customerService.updateCustomer(customer);
 		return res;
 	}	
