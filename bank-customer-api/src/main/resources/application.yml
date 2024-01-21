@@ -1,5 +1,7 @@
 server:
   port: 8081
+cors:
+  originPatterns: http://localhost:8080,http://localhost:8081
 spring:
   application:
     name: bank-customer-api
