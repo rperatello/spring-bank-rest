@@ -23,6 +23,7 @@ public class CustomerRequestVO implements Serializable {
 	private String address;
 	
 	private String password;
+	
 
 	public Long getId() {
 		return id;
@@ -82,8 +83,5 @@ public class CustomerRequestVO implements Serializable {
 				&& Objects.equals(id, other.id) && Objects.equals(name, other.name)
 				&& Objects.equals(password, other.password);
 	}
-	
-	
-
 
 }

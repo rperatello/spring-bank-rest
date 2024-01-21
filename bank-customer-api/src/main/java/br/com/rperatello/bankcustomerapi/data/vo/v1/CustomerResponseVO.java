@@ -3,18 +3,20 @@ package br.com.rperatello.bankcustomerapi.data.vo.v1;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 
 @JsonPropertyOrder({"id", "name", "document", "address", "password"})
-public class CustomerResponseVO implements Serializable {
+public class CustomerResponseVO extends RepresentationModel<CustomerResponseVO> implements Serializable {
 	
 
 	private static final long serialVersionUID = 1L;
 	
 	@JsonProperty("id")
-	private Long id;
+	private Long key;
 	
 	private String name;	
 
@@ -22,12 +24,14 @@ public class CustomerResponseVO implements Serializable {
 	
 	private String address;
 
-	public Long getId() {
-		return id;
+	
+
+	public Long getKey() {
+		return key;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setKey(Long key) {
+		this.key = key;
 	}
 
 	public String getName() {
@@ -56,23 +60,23 @@ public class CustomerResponseVO implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(address, document, id, name);
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(address, document, key, name);
+		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		CustomerResponseVO other = (CustomerResponseVO) obj;
 		return Objects.equals(address, other.address) && Objects.equals(document, other.document)
-				&& Objects.equals(id, other.id) && Objects.equals(name, other.name);
-	}
+				&& Objects.equals(key, other.key) && Objects.equals(name, other.name);
+	}	
 	
-	
-
-
 }

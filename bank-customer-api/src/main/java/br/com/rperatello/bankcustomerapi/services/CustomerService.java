@@ -1,5 +1,8 @@
 package br.com.rperatello.bankcustomerapi.services;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -7,6 +10,7 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.rperatello.bankcustomerapi.controller.CustomerController;
 import br.com.rperatello.bankcustomerapi.data.vo.v1.CustomerRequestVO;
 import br.com.rperatello.bankcustomerapi.data.vo.v1.CustomerResponseVO;
 import br.com.rperatello.bankcustomerapi.exceptions.DatabaseActionException;
@@ -33,6 +37,7 @@ public class CustomerService implements ICustomerService {
 		var customer = repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
 		var vo = Mapper.parseObject(customer, CustomerResponseVO.class);
+		vo.add(linkTo(methodOn(CustomerController.class).findById(id)).withSelfRel());
 		return vo;
 	}
 
@@ -40,6 +45,9 @@ public class CustomerService implements ICustomerService {
 	public List<CustomerResponseVO> getAll() {
 		logger.info("Get all customers ...");		
 		var customers = Mapper.parseListObjects(repository.findAll(), CustomerResponseVO.class);
+		customers
+			.stream()
+			.forEach(p -> p.add(linkTo(methodOn(CustomerController.class).findById(p.getKey())).withSelfRel()));
 		return customers;
 	}
 
@@ -56,6 +64,7 @@ public class CustomerService implements ICustomerService {
 				.build();
 		validateObject(customer);
 		var vo = Mapper.parseObject(repository.save(customer), CustomerResponseVO.class);
+		vo.add(linkTo(methodOn(CustomerController.class).findById(vo.getKey())).withSelfRel());
 		return vo;
 	}
 
@@ -70,13 +79,13 @@ public class CustomerService implements ICustomerService {
 				.address(customerReceived.getAddress())
 				.password(customerReceived.getPassword())
 				.build();
-
-		logger.info(String.format("password ...", customer.getPassword()));	
+		
 		validateObject(customer);		
 		var customerSaved = repository.findById(customer.getId())
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));		
 		customerSaved = Mapper.copyProperties(customer, customerSaved.getClass());
 		var vo = Mapper.parseObject(repository.save(customerSaved), CustomerResponseVO.class);
+		vo.add(linkTo(methodOn(CustomerController.class).findById(vo.getKey())).withSelfRel());
 		return vo;
 	}
 
