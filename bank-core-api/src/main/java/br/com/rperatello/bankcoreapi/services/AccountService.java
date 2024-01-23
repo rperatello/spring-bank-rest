@@ -148,17 +148,16 @@ public class AccountService implements IAccountService {
 		return;		
 	}	
 	
-	private boolean validateObject(Account account) {	
-		
+	private boolean validateObject(Account account) {		
 		var accountInDatabaseByNumber = accountRepository.findByNumber(account.getNumber());
 		var accountInDatabaseById = accountRepository.findById(account.getId()).orElse(null);
 		if (accountInDatabaseByNumber != null && accountInDatabaseByNumber.getId() != account.getId())
 			throw new DatabaseActionException("Database already contains this account");
 		if (account != null && !account.getNumber().toString().matches("\\d+"))
-			throw new RequiredObjectIsNullException("A valid account number is required");		
-		if (accountInDatabaseById != null && accountInDatabaseById.getNumber() != account.getNumber())
+			throw new RequiredObjectIsNullException("A valid account number is required");	
+		if (accountInDatabaseById != null && accountInDatabaseById.getNumber().longValue() != account.getNumber().longValue())
 			throw new DatabaseActionException("Account number cannot be changed");
-		if (accountInDatabaseById != null && !accountInDatabaseById.getAgency().equals(account.getAgency()))
+		if (accountInDatabaseById != null && accountInDatabaseById.getAgency().getNumber().longValue() != account.getAgency().getNumber().longValue())
 			throw new DatabaseActionException("Agency number cannot be changed");
 		return true;
 	}

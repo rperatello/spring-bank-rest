@@ -110,7 +110,7 @@ public class AgencyService implements IAgencyService {
 			throw new DatabaseActionException("Database already contains this agency");
 		if (agency != null && !agency.getNumber().toString().matches("\\d+"))
 			throw new RequiredObjectIsNullException("A valid agency number is required");		
-		if (agencyInDatabaseById != null && agencyInDatabaseById.getNumber() != agency.getNumber())
+		if (agencyInDatabaseById != null && agencyInDatabaseById.getNumber().longValue() != agency.getNumber().longValue())
 			throw new DatabaseActionException("Agency number cannot be changed");		
 		if (agency != null && agency.getName() == "")
 			throw new RequiredObjectIsNullException("A valid name is required");

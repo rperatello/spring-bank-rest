@@ -83,8 +83,6 @@ public class AccountRequestVO implements Serializable {
 		return Objects.equals(agencyNumber, other.agencyNumber) && Objects.equals(customerNumber, other.customerNumber)
 				&& Objects.equals(id, other.id) && Objects.equals(isActive, other.isActive)
 				&& Objects.equals(number, other.number);
-	}
-
-	
+	}	
 
 }
