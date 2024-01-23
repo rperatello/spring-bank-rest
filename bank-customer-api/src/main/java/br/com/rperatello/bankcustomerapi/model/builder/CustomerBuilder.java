@@ -52,10 +52,11 @@ public class CustomerBuilder implements ICustomerBuilder<Customer> {
         builder.setDocument("");
         builder.setAddress("");
         builder.setPassword("");
-    }
-    
+    }    
+
     public static CustomerBuilder getbuilder() {
     	return new CustomerBuilder();
     }
+
 }
 

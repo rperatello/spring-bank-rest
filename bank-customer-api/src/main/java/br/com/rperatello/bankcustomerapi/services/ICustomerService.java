@@ -17,4 +17,6 @@ public interface ICustomerService {
 	
 	void deleteCustomer(Long id);
 	
+	boolean IsAValidCustomerDocument(String document);
+	
 }

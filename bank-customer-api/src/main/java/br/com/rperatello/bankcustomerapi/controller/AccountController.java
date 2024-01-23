@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.rperatello.bankcustomerapi.data.vo.v1.CustomerRequestVO;
-import br.com.rperatello.bankcustomerapi.data.vo.v1.CustomerResponseVO;
+import br.com.rperatello.bankcustomerapi.data.vo.v1.AccountRequestVO;
+import br.com.rperatello.bankcustomerapi.data.vo.v1.AccountResponseVO;
 import br.com.rperatello.bankcustomerapi.model.MediaType;
-import br.com.rperatello.bankcustomerapi.services.ICustomerService;
+import br.com.rperatello.bankcustomerapi.services.IAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,26 +25,26 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/api/customer/v1")
-@Tag(name = "Customer", description = "Endpoints for Managing Customers")
-public class CustomerController {	
+@RequestMapping("/api/account/v1")
+@Tag(name = "Account", description = "Endpoints for Managing Accounts")
+public class AccountController {	
 
 	
 	@Autowired
-	private ICustomerService customerService;
+	private IAccountService accountService;
 	
 	@GetMapping(
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML }
 	)
 	@Operation(
-		summary = "Get all customers", description = "Finds all customers",
-		tags = {"Customer"},
+		summary = "Get all accounts", description = "Finds all accounts",
+		tags = {"Account"},
 		responses = {
 			@ApiResponse(description = "Success", responseCode = "200",
 				content = {
 					@Content(
 						mediaType = "application/json",
-						array = @ArraySchema(schema = @Schema(implementation = CustomerResponseVO.class))
+						array = @ArraySchema(schema = @Schema(implementation = AccountResponseVO.class))
 					)
 			}),
 			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -53,8 +53,8 @@ public class CustomerController {
 			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
 		}
 	)
-	public List<CustomerResponseVO> getAll() {
-		var res = customerService.getAll();
+	public List<AccountResponseVO> getAll() {
+		var res = accountService.getAll();
 		return res;
 	}
 
@@ -63,11 +63,11 @@ public class CustomerController {
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML }
 	)
 	@Operation(
-		summary = "Finds a customer", description = "Finds a customer",
-		tags = {"Customer"},
+		summary = "Finds a account ", description = "Finds a account",
+		tags = {"Account"},
 		responses = {
 			@ApiResponse(description = "Success", responseCode = "200",
-				content = @Content(schema = @Schema(implementation = CustomerResponseVO.class))
+				content = @Content(schema = @Schema(implementation = AccountResponseVO.class))
 			),
 			@ApiResponse(description = "No Content", responseCode = "204", content = @Content),
 			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -76,8 +76,8 @@ public class CustomerController {
 			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
 		}
 	)
-	public CustomerResponseVO findById(@PathVariable(value = "id") Long id) {
-		var res = customerService.findById(id);
+	public AccountResponseVO findById(@PathVariable(value = "id") Long id) {
+		var res = accountService.findById(id);
 		return res;
 	}
 	
@@ -86,19 +86,19 @@ public class CustomerController {
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML  }
 	)
 	@Operation(
-			summary = "Adds a new customer", description = "Adds a new customer using JSON, XML or YML representation",
-			tags = {"Customer"},
+			summary = "Adds a new account", description = "Adds a new account using JSON, XML or YML representation",
+			tags = {"Account"},
 			responses = {
 				@ApiResponse(description = "Success", responseCode = "200",
-					content = @Content(schema = @Schema(implementation = CustomerResponseVO.class))
+					content = @Content(schema = @Schema(implementation = AccountResponseVO.class))
 				),
 				@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
 				@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
 				@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
 			}
 	)
-	public CustomerResponseVO createNewCustomer(@RequestBody CustomerRequestVO customer) {
-		var res = customerService.createNewCustomer(customer);
+	public AccountResponseVO createNewAccount(@RequestBody AccountRequestVO account) {
+		var res = accountService.createNewAccount(account);
 		return res;
 	}
 	
@@ -107,11 +107,11 @@ public class CustomerController {
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML  }
 	)
 	@Operation(
-			summary = "Updates a customer", description = "Updates a customer using JSON, XML or YML representation",
-			tags = {"Customer"},
+			summary = "Updates a account", description = "Updates a account using JSON, XML or YML representation",
+			tags = {"Account"},
 			responses = {
 				@ApiResponse(description = "Updated", responseCode = "200",
-					content = @Content(schema = @Schema(implementation = CustomerResponseVO.class))
+					content = @Content(schema = @Schema(implementation = AccountResponseVO.class))
 				),
 				@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
 				@ApiResponse(description = "Unauthorized", responseCode = "401", content = @Content),
@@ -119,8 +119,8 @@ public class CustomerController {
 				@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
 			}
 	)
-	public CustomerResponseVO updateCustomer(@RequestBody CustomerRequestVO customer) {
-		var res = customerService.updateCustomer(customer);
+	public AccountResponseVO updateAccount(@RequestBody AccountRequestVO account) {
+		var res = accountService.updateAccount(account);
 		return res;
 	}	
 	
@@ -128,9 +128,9 @@ public class CustomerController {
 			value = "/{id}"
 	)
 	@Operation(
-		summary = "Deletes a customer by ID",
-		description = "Deletes a customer by ID",
-		tags = {"Customer"},
+		summary = "Deletes a account by ID",
+		description = "Deletes a account by ID",
+		tags = {"Account"},
 		responses = {
 			@ApiResponse(description = "No Content", responseCode = "204", content = @Content),
 			@ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -139,8 +139,8 @@ public class CustomerController {
 			@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
 		}
 	)
-	public ResponseEntity<?> DeleteCustomer(@PathVariable(value = "id") Long id) {
-		customerService.deleteCustomer(id);
+	public ResponseEntity<?> DeleteAccount(@PathVariable(value = "id") Long id) {
+		accountService.deleteAccount(id);
 		return ResponseEntity.noContent().build();
 	}
 	
