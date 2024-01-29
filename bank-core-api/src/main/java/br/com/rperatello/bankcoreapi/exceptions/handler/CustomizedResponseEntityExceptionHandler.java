@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import br.com.rperatello.bankcoreapi.exceptions.DatabaseActionException;
 import br.com.rperatello.bankcoreapi.exceptions.ExceptionResponse;
+import br.com.rperatello.bankcoreapi.exceptions.InvalidRequestException;
 import br.com.rperatello.bankcoreapi.exceptions.RequiredObjectIsNullException;
 import br.com.rperatello.bankcoreapi.exceptions.ResourceNotFoundException;
 
@@ -43,7 +44,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
 	}
 	
-	@ExceptionHandler({ RequiredObjectIsNullException.class, DatabaseActionException.class })
+	@ExceptionHandler({ RequiredObjectIsNullException.class, DatabaseActionException.class, InvalidRequestException.class })
 	public final ResponseEntity<ExceptionResponse> handleBadRequestExceptions(
 			Exception ex, WebRequest request) {
 		

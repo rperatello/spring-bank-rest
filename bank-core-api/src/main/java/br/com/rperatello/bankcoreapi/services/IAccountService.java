@@ -2,7 +2,8 @@ package br.com.rperatello.bankcoreapi.services;
 
 import java.util.List;
 
-import br.com.rperatello.bankcoreapi.data.vo.v1.AccountRequestVO;
+import br.com.rperatello.bankcoreapi.data.vo.v1.AccountStatusRequestVO;
+import br.com.rperatello.bankcoreapi.model.AccountBalanceUpdateModel;
 import br.com.rperatello.bankcoreapi.data.vo.v1.AccountResponseVO;
 
 public interface IAccountService {
@@ -11,10 +12,13 @@ public interface IAccountService {
 	
 	List<AccountResponseVO> getAll();	
 	
-	AccountResponseVO createNewAccount(AccountRequestVO account);
+	AccountResponseVO createNewAccount(AccountStatusRequestVO account);
 	
-	AccountResponseVO updateAccount(AccountRequestVO account);
+	AccountResponseVO updateAccountStatus(AccountStatusRequestVO account);
+	
+	boolean updateAccountBalance(AccountBalanceUpdateModel model);
 	
 	void deleteAccount(Long id);
+
 	
 }

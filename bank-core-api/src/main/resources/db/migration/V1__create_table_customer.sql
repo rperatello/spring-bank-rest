@@ -7,3 +7,4 @@ create table if not exists tb_customer (
 	primary key (id)
 );
 alter table if exists tb_customer add constraint UK_customer_document unique (document);
+create index if not exists IDX_customer_document on tb_customer (document);

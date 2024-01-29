@@ -4,7 +4,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import br.com.rperatello.bankcoreapi.model.Agency;
 import br.com.rperatello.bankcoreapi.model.builder.AgencyBuilder;
 import br.com.rperatello.bankcoreapi.repositories.IAccountRepository;
 import br.com.rperatello.bankcoreapi.repositories.IAgencyRepository;
+import jakarta.transaction.Transactional;
 
 //
 
@@ -40,8 +43,7 @@ public class AgencyService implements IAgencyService {
 		var agency = repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
 		var vo = Mapper.parseObject(agency, AgencyResponseVO.class);
-		vo.add(linkTo(methodOn(AgencyController.class).findById(id)).withSelfRel());
-		return vo;
+		return addAgencyHateoasLinks(vo);
 	}
 
 	@Override
@@ -50,7 +52,7 @@ public class AgencyService implements IAgencyService {
 		var agencies = Mapper.parseListObjects(repository.findAll(), AgencyResponseVO.class);
 		agencies
 			.stream()
-			.forEach(p -> p.add(linkTo(methodOn(AgencyController.class).findById(p.getKey())).withSelfRel()));
+			.forEach(p -> addAgencyHateoasLinks(p));
 		return agencies;
 	}
 
@@ -66,11 +68,11 @@ public class AgencyService implements IAgencyService {
 				.build();
 		validateObject(agency);
 		var vo = Mapper.parseObject(repository.save(agency), AgencyResponseVO.class);
-		vo.add(linkTo(methodOn(AgencyController.class).findById(vo.getKey())).withSelfRel());
-		return vo;
+		return addAgencyHateoasLinks(vo);
 	}
 
 	@Override
+	@Transactional
 	public AgencyResponseVO updateAgency(AgencyRequestVO agencyVO) {
 		logger.info(String.format("Update agency with ID %s ...", agencyVO.getId()));		
 		var agencyReceived = Mapper.parseObject(agencyVO, Agency.class);
@@ -79,15 +81,13 @@ public class AgencyService implements IAgencyService {
 				.id(agencyReceived.getId())
 				.name(agencyReceived.getName())
 				.number(agencyReceived.getNumber())
-				.build();
-		
+				.build();		
 		validateObject(agency);		
 		var agencySaved = repository.findById(agency.getId())
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));		
 		agencySaved = Mapper.copyProperties(agency, agencySaved.getClass());
 		var vo = Mapper.parseObject(repository.save(agencySaved), AgencyResponseVO.class);
-		vo.add(linkTo(methodOn(AgencyController.class).findById(vo.getKey())).withSelfRel());
-		return vo;
+		return addAgencyHateoasLinks(vo);
 	}
 
 	@Override
@@ -96,14 +96,23 @@ public class AgencyService implements IAgencyService {
 		var agencySaved = repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
 		var accounts = accountRepository.findByAgencyId(agencySaved.getId());
-		logger.info(String.format("accounts sizes: %s", accounts.size()));
 		if (!accounts.isEmpty()) throw new DatabaseActionException("Agency has associated account");
 		repository.delete(agencySaved);		
 		return;		
 	}	
 	
-	private boolean validateObject(Agency agency) {	
-		
+	public AgencyResponseVO addAgencyHateoasLinks( AgencyResponseVO vo) {
+		try {
+			if (vo == null) throw new ResourceNotFoundException("Agency data is required");
+			return vo.add(linkTo(methodOn(AgencyController.class).findById(vo.getKey())).withSelfRel());
+		} 
+		catch (Exception e) {
+			logger.log(Level.SEVERE, String.format("addAgencyHateoasLinks - Error: %s ", e.getMessage()));
+			return vo;
+		}
+	}
+	
+	private boolean validateObject(Agency agency) {		
 		var agencyInDatabaseByNumber = repository.findByNumber(agency.getNumber());
 		var agencyInDatabaseById = repository.findById(agency.getId()).orElse(null);
 		if (agencyInDatabaseByNumber != null && agencyInDatabaseByNumber.getId() != agency.getId())

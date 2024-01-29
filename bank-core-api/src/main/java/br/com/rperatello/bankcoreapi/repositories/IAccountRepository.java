@@ -13,6 +13,8 @@ public interface IAccountRepository extends JpaRepository<Account, Long> {
 	
 	Account findByNumber(Long number);
 	
+	Account findByAgencyNumberAndNumber(Long agencyNumber, Long number);
+	
 	List<Account> findByCustomerId(long customerId);
 	
 	List<Account> findByAgencyId(long agencyId);

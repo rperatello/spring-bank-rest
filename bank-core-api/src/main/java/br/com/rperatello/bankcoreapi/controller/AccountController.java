@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.rperatello.bankcoreapi.data.vo.v1.AccountRequestVO;
+import br.com.rperatello.bankcoreapi.data.vo.v1.AccountStatusRequestVO;
 import br.com.rperatello.bankcoreapi.data.vo.v1.AccountResponseVO;
 import br.com.rperatello.bankcoreapi.model.MediaType;
 import br.com.rperatello.bankcoreapi.services.IAccountService;
@@ -97,17 +97,18 @@ public class AccountController {
 				@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
 			}
 	)
-	public AccountResponseVO createNewAccount(@RequestBody AccountRequestVO account) {
+	public AccountResponseVO createNewAccount(@RequestBody AccountStatusRequestVO account) {
 		var res = accountService.createNewAccount(account);
 		return res;
 	}
 	
 	@PutMapping(
+			value = "status",
 			consumes = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML  },
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML  }
 	)
 	@Operation(
-			summary = "Updates a account", description = "Updates a account using JSON, XML or YML representation",
+			summary = "Updates account status", description = "Updates a account status using JSON, XML or YML representation",
 			tags = {"Account"},
 			responses = {
 				@ApiResponse(description = "Updated", responseCode = "200",
@@ -119,8 +120,8 @@ public class AccountController {
 				@ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
 			}
 	)
-	public AccountResponseVO updateAccount(@RequestBody AccountRequestVO account) {
-		var res = accountService.updateAccount(account);
+	public AccountResponseVO updateAccountStatus(@RequestBody AccountStatusRequestVO account) {
+		var res = accountService.updateAccountStatus(account);
 		return res;
 	}	
 	
@@ -142,9 +143,6 @@ public class AccountController {
 	public ResponseEntity<?> DeleteAccount(@PathVariable(value = "id") Long id) {
 		accountService.deleteAccount(id);
 		return ResponseEntity.noContent().build();
-	}
+	}	
 	
-
-
-
 }

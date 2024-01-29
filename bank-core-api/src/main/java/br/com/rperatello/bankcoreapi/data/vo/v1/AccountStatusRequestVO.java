@@ -6,8 +6,8 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"id", "number", "agency_number", "customer_document", "is_active"})
-public class AccountRequestVO implements Serializable {
+@JsonPropertyOrder({"id", "account_number", "agency_number", "customer_document", "is_active"})
+public class AccountStatusRequestVO implements Serializable {
 	
 
 	private static final long serialVersionUID = 1L;
@@ -15,10 +15,11 @@ public class AccountRequestVO implements Serializable {
 	@JsonProperty("id")
 	private Long id;
 	
+	@JsonProperty("account_number")
 	private Long number;
 
 	@JsonProperty("agency_number")
-	private Long agencyNumber;
+	private Long agencyNbr;
 	
 	@JsonProperty("customer_document")
 	private String customerNumber;
@@ -40,14 +41,14 @@ public class AccountRequestVO implements Serializable {
 
 	public void setNumber(Long number) {
 		this.number = number;
-	}	
-
-	public Long getAgencyNumber() {
-		return agencyNumber;
 	}
 
-	public void setAgencyNumber(Long agencyNumber) {
-		this.agencyNumber = agencyNumber;
+	public Long getAgencyNbr() {
+		return agencyNbr;
+	}
+
+	public void setAgencyNbr(Long agencyNbr) {
+		this.agencyNbr = agencyNbr;
 	}
 
 	public String getCustomerNumber() {
@@ -68,7 +69,7 @@ public class AccountRequestVO implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(agencyNumber, customerNumber, id, isActive, number);
+		return Objects.hash(agencyNbr, customerNumber, id, isActive, number);
 	}
 
 	@Override
@@ -79,10 +80,10 @@ public class AccountRequestVO implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AccountRequestVO other = (AccountRequestVO) obj;
-		return Objects.equals(agencyNumber, other.agencyNumber) && Objects.equals(customerNumber, other.customerNumber)
+		AccountStatusRequestVO other = (AccountStatusRequestVO) obj;
+		return Objects.equals(agencyNbr, other.agencyNbr) && Objects.equals(customerNumber, other.customerNumber)
 				&& Objects.equals(id, other.id) && Objects.equals(isActive, other.isActive)
 				&& Objects.equals(number, other.number);
-	}	
+	}
 
 }

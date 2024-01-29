@@ -6,6 +6,7 @@ import br.com.rperatello.bankcoreapi.model.Account;
 import br.com.rperatello.bankcoreapi.model.AccountStatus;
 import br.com.rperatello.bankcoreapi.model.Agency;
 import br.com.rperatello.bankcoreapi.model.Customer;
+import br.com.rperatello.bankcoreapi.utils.formatters.StringFormat;
 
 public class AccountBuilder implements IAccountBuilder<Account> {
 	
@@ -53,6 +54,7 @@ public class AccountBuilder implements IAccountBuilder<Account> {
 				.number(agency.getNumber())
 				.build();
     		builder.setAgency(agencyBuilder.build());
+    		builder.setAgencyNbr(agency.getNumber());
     	}
         return this;
     }
@@ -69,9 +71,28 @@ public class AccountBuilder implements IAccountBuilder<Account> {
 				.password(customer.getPassword())
 				.build();
     		builder.setCustomer(customerBuilder.build());
+    		builder.setCustomerNumber(customer.getDocument());
     	}
         return this;
-    }    
+    } 
+    
+    public AccountBuilder agencyNumber(Long number) {
+    	if( number == null ) number = 0L;
+    	builder.setAgencyNbr(number);
+        return this;
+    }
+    
+    public AccountBuilder accountNumber(Long number) {
+    	if( number == null ) number = 0L;
+    	builder.setNumber(number);
+        return this;
+    } 
+    
+    public AccountBuilder customerDocument(String document) {
+    	if( document == null ) document = "";
+    	builder.setCustomerNumber(StringFormat.removeAllSpaces(document));
+        return this;
+    }   
 
     @Override
     public Account build() {

@@ -5,6 +5,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import br.com.rperatello.bankcoreapi.model.Customer;
 import br.com.rperatello.bankcoreapi.model.builder.CustomerBuilder;
 import br.com.rperatello.bankcoreapi.repositories.IAccountRepository;
 import br.com.rperatello.bankcoreapi.repositories.ICustomerRepository;
+import jakarta.transaction.Transactional;
 
 //
 
@@ -43,8 +45,17 @@ public class CustomerService implements ICustomerService {
 		var customer = customerRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
 		var vo = Mapper.parseObject(customer, CustomerResponseVO.class);
-		vo.add(linkTo(methodOn(CustomerController.class).findById(id)).withSelfRel());
-		return vo;
+		return addCustomerHateoasLinks(vo);
+	}
+	
+	@Override
+	public CustomerResponseVO findByDocument(String document) {
+		logger.info(String.format("Find customer with document %s ...", document));
+		IsAValidCustomerDocument(document);
+		var customer = customerRepository.findByDocument(document);
+		if (customer == null) new ResourceNotFoundException("No records found for this ID");
+		var vo = Mapper.parseObject(customer, CustomerResponseVO.class);
+		return addCustomerHateoasLinks(vo);
 	}
 
 	@Override
@@ -53,7 +64,7 @@ public class CustomerService implements ICustomerService {
 		var customers = Mapper.parseListObjects(customerRepository.findAll(), CustomerResponseVO.class);
 		customers
 			.stream()
-			.forEach(p -> p.add(linkTo(methodOn(CustomerController.class).findById(p.getKey())).withSelfRel()));
+			.forEach(p -> addCustomerHateoasLinks(p));
 		return customers;
 	}
 
@@ -71,11 +82,11 @@ public class CustomerService implements ICustomerService {
 				.build();
 		validateObject(customer);
 		var vo = Mapper.parseObject(customerRepository.save(customer), CustomerResponseVO.class);
-		vo.add(linkTo(methodOn(CustomerController.class).findById(vo.getKey())).withSelfRel());
-		return vo;
+		return addCustomerHateoasLinks(vo);
 	}
 
 	@Override
+	@Transactional
 	public CustomerResponseVO updateCustomer(CustomerRequestVO customerVO) {
 		logger.info(String.format("Update customer with ID %s ...", customerVO.getId()));		
 		var customerReceived = Mapper.parseObject(customerVO, Customer.class);	
@@ -86,15 +97,13 @@ public class CustomerService implements ICustomerService {
 				.document(customerReceived.getDocument())
 				.address(customerReceived.getAddress())
 				.password(customerReceived.getPassword())
-				.build();
-		
+				.build();		
 		validateObject(customer);		
 		var customerSaved = customerRepository.findById(customer.getId())
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));		
 		customerSaved = Mapper.copyProperties(customer, customerSaved.getClass());
 		var vo = Mapper.parseObject(customerRepository.save(customerSaved), CustomerResponseVO.class);
-		vo.add(linkTo(methodOn(CustomerController.class).findById(vo.getKey())).withSelfRel());
-		return vo;
+		return addCustomerHateoasLinks(vo);
 	}
 
 	@Override
@@ -114,10 +123,7 @@ public class CustomerService implements ICustomerService {
 		var customerInDatabase = customerRepository.findByDocument(customer.getDocument());
 		if (customerInDatabase != null && customerInDatabase.getId() != customer.getId())
 			throw new DatabaseActionException("Database already contains this document");
-		if (customer != null && !customer.getDocument().matches("\\d+"))
-			throw new RequiredObjectIsNullException("A valid document is required");
-		if (customer != null && !Arrays.stream(documentLenghtAccepted).anyMatch(el -> el == customer.getDocument().length())) 
-			throw new RequiredObjectIsNullException("A valid document is required");
+		IsAValidCustomerDocument(customer.getDocument());
 		if (customer != null && customer.getName() == "")
 			throw new RequiredObjectIsNullException("A valid name is required");
 		if (customer != null && customer.getAddress() == "")
@@ -132,6 +138,16 @@ public class CustomerService implements ICustomerService {
 			throw new RequiredObjectIsNullException("A valid document is required");
 		return true;
 	}
-
+	
+	public CustomerResponseVO addCustomerHateoasLinks( CustomerResponseVO vo) {		
+		try {
+			if (vo == null) throw new ResourceNotFoundException("Customer data is required");
+			return vo.add(linkTo(methodOn(CustomerController.class).findById(vo.getKey())).withSelfRel());
+		} 
+		catch (Exception e) {
+			logger.log(Level.SEVERE, String.format("addCustomerHateoasLinks - Error: %s ", e.getMessage()));
+			return vo;
+		}
+	}
 
 }

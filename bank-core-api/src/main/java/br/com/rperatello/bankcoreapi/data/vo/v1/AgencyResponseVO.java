@@ -67,4 +67,7 @@ public class AgencyResponseVO extends RepresentationModel<AgencyResponseVO> impl
 				&& Objects.equals(number, other.number);
 	}	
 	
+	
+	
+	
 }

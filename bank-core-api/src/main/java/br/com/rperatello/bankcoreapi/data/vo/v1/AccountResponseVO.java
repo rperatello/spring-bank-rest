@@ -15,7 +15,6 @@ import br.com.rperatello.bankcoreapi.model.AccountStatus;
 
 @JsonPropertyOrder({"id", "agency", "number", "customer", "balance", "status"})
 public class AccountResponseVO extends RepresentationModel<AccountResponseVO> implements Serializable {
-	
 
 	private static final long serialVersionUID = 1L;
 	

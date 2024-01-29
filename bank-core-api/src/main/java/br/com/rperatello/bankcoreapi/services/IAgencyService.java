@@ -15,6 +15,8 @@ public interface IAgencyService {
 	
 	AgencyResponseVO updateAgency(AgencyRequestVO agency);
 	
+	AgencyResponseVO addAgencyHateoasLinks( AgencyResponseVO vo);
+	
 	void deleteAgency(Long id);
 	
 }

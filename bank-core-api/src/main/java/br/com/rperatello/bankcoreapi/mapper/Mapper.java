@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 
-import br.com.rperatello.bankcoreapi.data.vo.v1.AccountRequestVO;
+import br.com.rperatello.bankcoreapi.data.vo.v1.AccountStatusRequestVO;
 import br.com.rperatello.bankcoreapi.data.vo.v1.AccountResponseVO;
 import br.com.rperatello.bankcoreapi.data.vo.v1.AgencyResponseVO;
 import br.com.rperatello.bankcoreapi.data.vo.v1.CustomerResponseVO;
@@ -27,8 +27,9 @@ public class Mapper {
 		mapper.createTypeMap(Account.class, AccountResponseVO.class)
 		.addMapping(Account::getId, AccountResponseVO::setKey);
 		
-		mapper.createTypeMap(AccountRequestVO.class, Account.class)
-		.addMapping(AccountRequestVO::getAgencyNumber, Account::setAgencyNumber);		
+		mapper.createTypeMap(AccountStatusRequestVO.class, Account.class)
+		.addMapping(AccountStatusRequestVO::getAgencyNbr, Account::setAgencyNbr)		
+		.addMapping(AccountStatusRequestVO::getCustomerNumber, Account::setCustomerNumber);	
 	}	
 	
 	public static <O, D> D parseObject(O origin, Class<D> destination) {

@@ -33,15 +33,15 @@ public class Account implements Serializable {
    
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name="agency_id")
+	@JoinColumn(name="agency_number", referencedColumnName = "number")
 	private Agency agency;
 	
 	@Transient
-	private Long agencyNumber;
+	private Long agencyNbr;
 	
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name="customer_id")
+	@JoinColumn(name="customer_document", referencedColumnName = "document")
 	private Customer customer;	
 	
 	@Transient
@@ -81,12 +81,12 @@ public class Account implements Serializable {
 		this.agency = agency;
 	}
 
-	public Long getAgencyNumber() {
-		return agencyNumber;
+	public Long getAgencyNbr() {
+		return agencyNbr;
 	}
 
-	public void setAgencyNumber(Long agencyNumber) {
-		this.agencyNumber = agencyNumber;
+	public void setAgencyNbr(Long agencyNbr) {
+		this.agencyNbr = agencyNbr;
 	}
 
 	public Customer getCustomer() {
@@ -114,7 +114,7 @@ public class Account implements Serializable {
 	}
 
 	public String getStatus() {
-		return status;
+		return this.status != null ? this.status : this.isActive ? AccountStatus.ACTIVE : AccountStatus.INACTIVE;
 	}
 
 	public void setStatus(String status) {
@@ -131,7 +131,7 @@ public class Account implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(agency, agencyNumber, balance, customer, customerNumber, id, isActive, number, status);
+		return Objects.hash(agency, agencyNbr, balance, customer, customerNumber, id, isActive, number, status);
 	}
 
 	@Override
@@ -143,7 +143,7 @@ public class Account implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Account other = (Account) obj;
-		return Objects.equals(agency, other.agency) && Objects.equals(agencyNumber, other.agencyNumber)
+		return Objects.equals(agency, other.agency) && Objects.equals(agencyNbr, other.agencyNbr)
 				&& Objects.equals(balance, other.balance) && Objects.equals(customer, other.customer)
 				&& Objects.equals(customerNumber, other.customerNumber) && Objects.equals(id, other.id)
 				&& Objects.equals(isActive, other.isActive) && Objects.equals(number, other.number)
