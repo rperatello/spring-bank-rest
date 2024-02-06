@@ -19,6 +19,5 @@ public interface IAccountService {
 	boolean updateAccountBalance(AccountBalanceUpdateModel model);
 	
 	void deleteAccount(Long id);
-
 	
 }

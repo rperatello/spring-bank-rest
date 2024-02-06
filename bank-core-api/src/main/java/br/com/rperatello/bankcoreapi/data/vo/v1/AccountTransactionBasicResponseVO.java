@@ -1,21 +1,15 @@
 package br.com.rperatello.bankcoreapi.data.vo.v1;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Objects;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import br.com.rperatello.bankcoreapi.model.AccountStatus;
-
-
 @JsonPropertyOrder({"id", "agency", "number", "customer", "balance", "status"})
-public class AccountResponseVO extends RepresentationModel<AccountResponseVO> implements Serializable {
+public class AccountTransactionBasicResponseVO extends RepresentationModel<AccountTransactionBasicResponseVO> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -28,14 +22,7 @@ public class AccountResponseVO extends RepresentationModel<AccountResponseVO> im
 	
 	private CustomerResponseVO customer;
 	
-	private BigDecimal balance;
-	
-	@JsonIgnore
-	private Boolean isActive;
-	
-	private String status;
-	
-	public AccountResponseVO () {};
+	public AccountTransactionBasicResponseVO () {};
 
 	public Long getKey() {
 		return key;
@@ -69,31 +56,11 @@ public class AccountResponseVO extends RepresentationModel<AccountResponseVO> im
 		this.customer = customer;
 	}
 
-	public BigDecimal getBalance() {
-		return balance.setScale(2, RoundingMode.HALF_UP);
-	}
-
-	public void setBalance(BigDecimal balance) {
-		this.balance = balance.setScale(2, RoundingMode.HALF_UP);
-	}
-
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}	
-
-	public String getStatus() {
-		return this.isActive ? AccountStatus.ACTIVE : AccountStatus.INACTIVE;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + Objects.hash(agency, balance, customer, isActive, key, number, status);
+		result = prime * result + Objects.hash(agency, customer, key, number);
 		return result;
 	}
 
@@ -105,11 +72,9 @@ public class AccountResponseVO extends RepresentationModel<AccountResponseVO> im
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AccountResponseVO other = (AccountResponseVO) obj;
-		return Objects.equals(agency, other.agency) && Objects.equals(balance, other.balance)
-				&& Objects.equals(customer, other.customer) && Objects.equals(isActive, other.isActive)
-				&& Objects.equals(key, other.key) && Objects.equals(number, other.number)
-				&& Objects.equals(status, other.status);
+		AccountTransactionBasicResponseVO other = (AccountTransactionBasicResponseVO) obj;
+		return Objects.equals(agency, other.agency) && Objects.equals(customer, other.customer)
+				&& Objects.equals(key, other.key) && Objects.equals(number, other.number);
 	}
 	
 }

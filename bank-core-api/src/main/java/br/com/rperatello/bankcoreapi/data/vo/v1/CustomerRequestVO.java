@@ -24,6 +24,7 @@ public class CustomerRequestVO implements Serializable {
 	
 	private String password;
 	
+	public CustomerRequestVO(){};	
 
 	public Long getId() {
 		return id;

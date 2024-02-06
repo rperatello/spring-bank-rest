@@ -2,23 +2,27 @@ package br.com.rperatello.bankcoreapi.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 //import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-//@Table(name = "tb_account", uniqueConstraints = {@UniqueConstraint(columnNames = {"number", "agency_id"})})
-@Table(name = "tb_account")
+@Table(name = "tb_accounts")
 public class Account implements Serializable {
 	
 
@@ -47,13 +51,19 @@ public class Account implements Serializable {
 	@Transient
 	private String customerNumber;
 	
-	private BigDecimal balance = BigDecimal.ZERO;
+	private BigDecimal balance = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
 	
 	@Transient
 	private String status;
 	
 	@Column(name = "is_active", nullable = false, length = 100)
 	private Boolean isActive = false;
+	
+	@OneToMany(mappedBy = "payer", fetch = FetchType.LAZY)
+    private List<Transaction> transactionsLikePayer;
+	
+	@OneToMany(mappedBy = "payee", fetch = FetchType.LAZY)
+    private List<Transaction> transactionsLikePayee;
 
 	public Account() {}
 
@@ -106,11 +116,11 @@ public class Account implements Serializable {
 	}
 
 	public BigDecimal getBalance() {
-		return balance;
+		return balance.setScale(2, RoundingMode.HALF_UP);
 	}
 
 	public void setBalance(BigDecimal balance) {
-		this.balance = balance;
+		this.balance = balance.setScale(2, RoundingMode.HALF_UP);
 	}
 
 	public String getStatus() {

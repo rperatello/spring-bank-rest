@@ -32,7 +32,6 @@ import br.com.rperatello.bankcoreapi.utils.serealization.converter.GsonUtil;
 import br.com.rperatello.bankcoreapi.utils.validators.EnumValidator;
 import jakarta.transaction.Transactional;
 
-//
 
 @Service
 public class AccountService implements IAccountService {	
@@ -109,18 +108,22 @@ public class AccountService implements IAccountService {
 	@Transactional
 	public boolean updateAccountBalance(AccountBalanceUpdateModel model) {
 		logger.info(String.format("Update balance - Agency: %s | Account: %s ...", model.getAgencyNumber(), model.getAccountNumber()));		
-		validateAccountBalanceUpdateModel(model);		
-		var account = accountRepository.findByAgencyNumberAndNumber(model.getAgencyNumber(), model.getAccountNumber());
-		if (account == null) throw new ResourceNotFoundException("Account not found");	
+//		validateAccountBalanceUpdateModel(model);		
+		
+		if (model.getAccount() == null) throw new ResourceNotFoundException("Account not found");
+		var account = model.getAccount();		
 		if (!account.getIsActive()) throw new InvalidRequestException(String.format("Inactive account (Agency: %s | Account number: %s)", model.getAgencyNumber(), model.getAccountNumber()));
 		account.setAgencyNbr(model.getAgencyNumber());
 		account.setNumber(model.getAccountNumber());
-		if (!account.getCustomer().getPassword().toString().trim().toLowerCase().equals((model.getPassword()).trim().toLowerCase())) throw new InvalidRequestException("Invalid Password");
+		if (!account.getCustomer().getDocument().toString().trim().toLowerCase().equals((model.getDocument().toString()).trim().toLowerCase())) throw new InvalidRequestException("Document does not match");
+		
+		if (model.getTransactionType() != TransactionType.CREDIT && !account.getCustomer().getPassword().toString().trim().toLowerCase().equals((model.getPassword()).trim().toLowerCase())) throw new InvalidRequestException("Invalid Password");
 		var accountBalance = account.getBalance();
 		accountBalance = model.getTransactionType() == TransactionType.DEBIT ? accountBalance.subtract(model.getAmount()) : accountBalance.add(model.getAmount());
-		if (accountBalance.compareTo(BigDecimal.ZERO) < 0) throw new InvalidRequestException("Insufficient funds");
-		account.setBalance(accountBalance);
+		if (model.getTransactionType() != TransactionType.CREDIT && accountBalance.compareTo(BigDecimal.ZERO) < 0) throw new InvalidRequestException("Insufficient funds");
+		account.setBalance(accountBalance);		
 		updateAccount(account, AccountUpdatesAllowed.BALANCE);
+		model.setAccount(account);
 		return true;
 	}
 	

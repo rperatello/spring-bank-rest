@@ -26,6 +26,8 @@ public class AccountStatusRequestVO implements Serializable {
 	
 	@JsonProperty("is_active")
 	private Boolean isActive = false;
+	
+	public AccountStatusRequestVO() {};
 
 	public Long getId() {
 		return id;

@@ -24,7 +24,7 @@ public class CustomerResponseVO extends RepresentationModel<CustomerResponseVO> 
 	
 	private String address;
 
-	
+	public CustomerResponseVO(){};
 
 	public Long getKey() {
 		return key;

@@ -20,6 +20,7 @@ public class AgencyRequestVO implements Serializable {
 
 	private String name;
 	
+	public AgencyRequestVO() {};	
 
 	public Long getId() {
 		return id;

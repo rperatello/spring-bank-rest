@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "tb_agency")
+@Table(name = "tb_agencies")
 public class Agency implements Serializable {
 
 

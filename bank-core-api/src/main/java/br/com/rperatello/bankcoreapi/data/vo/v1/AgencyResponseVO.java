@@ -21,6 +21,8 @@ public class AgencyResponseVO extends RepresentationModel<AgencyResponseVO> impl
 	private Long number;	
 
 	private String name;
+	
+	public AgencyResponseVO() {};
 
 	public Long getKey() {
 		return key;
