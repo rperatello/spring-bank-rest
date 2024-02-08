@@ -22,7 +22,7 @@ public class AccountBalanceUpdateModel implements Serializable {
 	private Long agencyNumber;
 	
 	@JsonProperty("customer_document")
-	private Long document;
+	private String document;
 
 	private BigDecimal amount = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
 	
@@ -36,9 +36,6 @@ public class AccountBalanceUpdateModel implements Serializable {
 	@Transient
 	@JsonIgnore
 	private Account account;
-	
-	@JsonIgnore
-	private MessageStatus customerMessageStatus = MessageStatus.PENDING; 
 
 	public AccountBalanceUpdateModel() {}
 
@@ -58,11 +55,11 @@ public class AccountBalanceUpdateModel implements Serializable {
 		this.agencyNumber = agencyNumber;
 	}	
 
-	public Long getDocument() {
+	public String getDocument() {
 		return document;
 	}
 
-	public void setDocument(Long document) {
+	public void setDocument(String document) {
 		this.document = document;
 	}
 
@@ -98,18 +95,9 @@ public class AccountBalanceUpdateModel implements Serializable {
 		this.account = account;
 	}
 
-	public MessageStatus getCustomerMessageStatus() {
-		return customerMessageStatus;
-	}
-
-	public void setCustomerMessageStatus(MessageStatus customerMessageStatus) {
-		this.customerMessageStatus = customerMessageStatus;
-	}
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(TransactionType, account, accountNumber, agencyNumber, amount, customerMessageStatus,
-				document, password);
+		return Objects.hash(TransactionType, account, accountNumber, agencyNumber, amount, document, password);
 	}
 
 	@Override
@@ -124,8 +112,7 @@ public class AccountBalanceUpdateModel implements Serializable {
 		return TransactionType == other.TransactionType && Objects.equals(account, other.account)
 				&& Objects.equals(accountNumber, other.accountNumber)
 				&& Objects.equals(agencyNumber, other.agencyNumber) && Objects.equals(amount, other.amount)
-				&& customerMessageStatus == other.customerMessageStatus && Objects.equals(document, other.document)
-				&& Objects.equals(password, other.password);
+				&& Objects.equals(document, other.document) && Objects.equals(password, other.password);
 	}
 	
 }

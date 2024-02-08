@@ -8,10 +8,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import br.com.rperatello.bankcoreapi.model.TransactionMethod;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 
 public class TransactionRequestVO implements Serializable {

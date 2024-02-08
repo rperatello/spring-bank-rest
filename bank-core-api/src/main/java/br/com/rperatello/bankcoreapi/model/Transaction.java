@@ -53,7 +53,6 @@ public class Transaction implements Serializable {
 	@Column(name = "transaction_method", nullable = false, length = 100)
 	private TransactionMethod transactionMethod;
 	
-	@NotNull
 	@Column(name = "datetime", nullable = false)
 	private LocalDateTime datetime = LocalDateTime.now();
 	

@@ -15,6 +15,7 @@ import org.modelmapper.spi.MappingContext;
 
 import br.com.rperatello.bankcoreapi.data.vo.v1.AccountStatusRequestVO;
 import br.com.rperatello.bankcoreapi.data.vo.v1.AccountTransactionBasicResponseVO;
+import br.com.rperatello.bankcoreapi.data.vo.v1.AccountTransactionNotificationVO;
 import br.com.rperatello.bankcoreapi.data.vo.v1.AccountDataModelVO;
 import br.com.rperatello.bankcoreapi.data.vo.v1.AccountResponseVO;
 import br.com.rperatello.bankcoreapi.data.vo.v1.AgencyResponseVO;
@@ -23,6 +24,7 @@ import br.com.rperatello.bankcoreapi.data.vo.v1.TransactionRequestVO;
 import br.com.rperatello.bankcoreapi.data.vo.v1.TransactionResponseVO;
 import br.com.rperatello.bankcoreapi.model.Account;
 import br.com.rperatello.bankcoreapi.model.AccountBalanceUpdateModel;
+import br.com.rperatello.bankcoreapi.model.AccountTransactionNotification;
 import br.com.rperatello.bankcoreapi.model.Agency;
 import br.com.rperatello.bankcoreapi.model.Customer;
 import br.com.rperatello.bankcoreapi.model.Transaction;
@@ -95,6 +97,8 @@ public class Mapper {
 		
 		mapper.createTypeMap(Transaction.class, TransactionResponseVO.class)
 			.addMapping(Transaction::getId, TransactionResponseVO::setKey);
+		
+		mapper.createTypeMap(AccountTransactionNotification.class, AccountTransactionNotificationVO.class);
 		
 	}
 	

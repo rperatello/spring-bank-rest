@@ -37,7 +37,7 @@ public class CustomerBuilder implements ICustomerBuilder<Customer> {
 
     public CustomerBuilder password(String password) {
     	if( password == null ) password = "";
-    	builder.setPassword(StringFormat.removeDoubleSpace(password).toLowerCase());
+    	builder.setPassword(StringFormat.removeDoubleSpace(password));
         return this;
     }
 

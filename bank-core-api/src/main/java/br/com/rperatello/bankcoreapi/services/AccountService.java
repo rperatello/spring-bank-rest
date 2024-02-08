@@ -22,6 +22,7 @@ import br.com.rperatello.bankcoreapi.mapper.Mapper;
 import br.com.rperatello.bankcoreapi.model.Account;
 import br.com.rperatello.bankcoreapi.model.AccountBalanceUpdateModel;
 import br.com.rperatello.bankcoreapi.model.AccountUpdatesAllowed;
+import br.com.rperatello.bankcoreapi.model.TransactionMethod;
 import br.com.rperatello.bankcoreapi.model.TransactionType;
 import br.com.rperatello.bankcoreapi.model.builder.AccountBuilder;
 import br.com.rperatello.bankcoreapi.repositories.IAccountRepository;
@@ -108,16 +109,11 @@ public class AccountService implements IAccountService {
 	@Transactional
 	public boolean updateAccountBalance(AccountBalanceUpdateModel model) {
 		logger.info(String.format("Update balance - Agency: %s | Account: %s ...", model.getAgencyNumber(), model.getAccountNumber()));		
-//		validateAccountBalanceUpdateModel(model);		
-		
-		if (model.getAccount() == null) throw new ResourceNotFoundException("Account not found");
-		var account = model.getAccount();		
-		if (!account.getIsActive()) throw new InvalidRequestException(String.format("Inactive account (Agency: %s | Account number: %s)", model.getAgencyNumber(), model.getAccountNumber()));
+		validateAccountBalanceUpdateModel(model);
+		model.setTransactionType(EnumConverter.convertToEnum(TransactionType.class, model.getTransactionType()));	
+		var account = model.getAccount();
 		account.setAgencyNbr(model.getAgencyNumber());
-		account.setNumber(model.getAccountNumber());
-		if (!account.getCustomer().getDocument().toString().trim().toLowerCase().equals((model.getDocument().toString()).trim().toLowerCase())) throw new InvalidRequestException("Document does not match");
-		
-		if (model.getTransactionType() != TransactionType.CREDIT && !account.getCustomer().getPassword().toString().trim().toLowerCase().equals((model.getPassword()).trim().toLowerCase())) throw new InvalidRequestException("Invalid Password");
+		account.setNumber(model.getAccountNumber());		
 		var accountBalance = account.getBalance();
 		accountBalance = model.getTransactionType() == TransactionType.DEBIT ? accountBalance.subtract(model.getAmount()) : accountBalance.add(model.getAmount());
 		if (model.getTransactionType() != TransactionType.CREDIT && accountBalance.compareTo(BigDecimal.ZERO) < 0) throw new InvalidRequestException("Insufficient funds");
@@ -199,9 +195,12 @@ public class AccountService implements IAccountService {
 		if (model.getAgencyNumber() == null) throw new InvalidRequestException("Agency number is required");
 		if (model.getAccountNumber() == null) throw new InvalidRequestException("Account number is required");
 		if (model.getTransactionType() == null) throw new InvalidRequestException("Transaction type is required");		
-		if (!EnumValidator.hasValue(TransactionType.class, model.getTransactionType())) throw new InvalidRequestException("Invalid transaction type");		
-		model.setTransactionType(EnumConverter.convertToEnum(TransactionType.class, model.getTransactionType()));			
+		if (!EnumValidator.hasValue(TransactionType.class, model.getTransactionType())) throw new InvalidRequestException("Invalid transaction type");				
+		if (model.getAccount() == null) throw new ResourceNotFoundException("Account not found");		
+		if (!model.getAccount().getIsActive()) throw new InvalidRequestException(String.format("Inactive account (Agency: %s | Account number: %s)", model.getAgencyNumber(), model.getAccountNumber()));
+		if (!model.getAccount().getCustomer().getDocument().trim().toLowerCase().equals((model.getDocument()).trim().toLowerCase())) throw new InvalidRequestException("Document does not match");
 		if (model.getTransactionType() == TransactionType.DEBIT && model.getPassword() == null) throw new InvalidRequestException("Password is required");
+		if (model.getTransactionType() != TransactionType.CREDIT && !model.getAccount().getCustomer().getPassword().toString().trim().equals((model.getPassword()).trim())) throw new InvalidRequestException("Invalid Password");
 		return true;
 	}
 

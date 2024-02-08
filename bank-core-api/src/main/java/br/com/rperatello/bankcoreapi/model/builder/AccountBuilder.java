@@ -1,6 +1,7 @@
 package br.com.rperatello.bankcoreapi.model.builder;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import br.com.rperatello.bankcoreapi.model.Account;
 import br.com.rperatello.bankcoreapi.model.AccountStatus;
@@ -30,7 +31,7 @@ public class AccountBuilder implements IAccountBuilder<Account> {
     }
     
     public AccountBuilder balance(BigDecimal balance) {
-    	if( balance == null ) balance = BigDecimal.ZERO;
+    	if( balance == null ) balance = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
     	builder.setBalance(balance);
         return this;
     }
@@ -102,7 +103,7 @@ public class AccountBuilder implements IAccountBuilder<Account> {
     private void SetDefaultValues() {
     	builder.setId(0L); 
         builder.setNumber(0L);
-        builder.setBalance(BigDecimal.ZERO);
+        builder.setBalance(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP));
         builder.setIsActive(false);
         builder.setAgency(AgencyBuilder.getbuilder().build());      
         builder.setCustomer(CustomerBuilder.getbuilder().build()); 
