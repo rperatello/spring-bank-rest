@@ -7,14 +7,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.el.stream.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
-import br.com.rperatello.bankcoreapi.controller.TransactionController;
 import br.com.rperatello.bankcoreapi.data.vo.v1.AccountTransactionNotificationVO;
 import br.com.rperatello.bankcoreapi.httpclient.ITransactionNotificationFeignClient;
 import br.com.rperatello.bankcoreapi.mapper.Mapper;
@@ -26,6 +27,7 @@ import br.com.rperatello.bankcoreapi.utils.serealization.converter.GsonUtil;
 
 
 @Service
+@EnableAsync
 public class NotificationService implements INotificationService {	
 	
 	@Autowired
@@ -45,18 +47,14 @@ public class NotificationService implements INotificationService {
 			if (!validatePassed) {
 				logger.log(Level.SEVERE, String.format("NotificationService | Notification not sent: %s", GsonUtil.Serialize(accountNotification)));
 				return;
-			}
-			
+			}			
 			AccountTransactionNotificationVO message = Mapper.parseObject(accountNotification, AccountTransactionNotificationVO.class);			
-			CustomerTransactionNotificationResponse response = custumerTransactionNotificationClient.sendCustomerTransactionNotification(getToken(), message);
-			
-			logger.info(String.format("NotificationService | response: %s", GsonUtil.Serialize(response)));
-			
+			CustomerTransactionNotificationResponse response = custumerTransactionNotificationClient.sendCustomerTransactionNotification(getToken(), message);			
 			if(response.isMessageSent()) {
 				accountNotification.setSentAt(LocalDateTime.now());
 				accountNotification.setCustomerMessageStatus(MessageStatus.SENT);
-			}
-			atNotificationRepository.save(accountNotification);
+			}			
+			atNotificationRepository.save(accountNotification);			
 			return;
 		}
 		catch (Exception e) {
@@ -68,8 +66,39 @@ public class NotificationService implements INotificationService {
 		
 	}
 	
+	@Override
+	@Async
+	public CompletableFuture<Boolean> processCustomerTransactionNotificationNotSent() {
+		try {			
+				CompletableFuture<List<AccountTransactionNotification>> notificationsFuture  = atNotificationRepository.findByCustomerMessageStatus(MessageStatus.PENDING);
+				notificationsFuture.thenAcceptAsync(result -> {					
+					if (result.isEmpty())
+						return;
+					
+			        result.forEach( notification -> {
+			        	if (notification.getCustomerMessageStatus().equals(MessageStatus.PENDING))
+			        		sentCustomerTransactionNotification(notification);
+			        });
+			    });
+				
+				List<AccountTransactionNotification> notifications = notificationsFuture.join();
+				
+		        for (AccountTransactionNotification notification : notifications) {
+		            logger.info(String.format("NotificationService | Sent notification | Transaction ID: %s", notification.getTransactionId()));
+		            sentCustomerTransactionNotification(notification);
+		        }
+		        logger.info(String.format("NotificationService | Total notifications sent | Total: %s", notifications.size()));
+		        
+				return CompletableFuture.completedFuture(true);
+
+		}
+		catch (Exception e) {
+			logger.log(Level.SEVERE, String.format("NotificationService | processCustomerTransactionNotificationNotSent | Error: %s", e.getMessage()));
+			return CompletableFuture.completedFuture(false);
+		}		
+	}
+	
 	private boolean ValidateAccountTransactionNotification(AccountTransactionNotification notification) {
-		logger.info(String.format("%s", GsonUtil.Serialize(notification)));
 		boolean validated = true;
 		if (notification.getTransactionId() == null || notification.getTransactionId() == 0L) validated = false;
 		if (notification.getCustomerDocument() == null || notification.getCustomerDocument() == "") validated = false;

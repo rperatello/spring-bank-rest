@@ -9,7 +9,7 @@ spring:
     url: jdbc:h2:mem:bank_customer_db;DB_CLOSE_ON_EXIT=FALSE
     driverClassName: org.h2.Driver
     username: sa
-    password: 
+    password:        
   h2:
     console:
       enabled: true
@@ -19,6 +19,39 @@ spring:
     hibernate:
       ddl-auto: none    
     show-sql: false
+  quartz:
+    job-store-type: JDBC
+    wait-for-jobs-to-complete-on-shutdown: true
+    jdbc:
+      initialize-schema: never
+    properties:
+      org:
+        quartz:
+          dataSource:
+            quartzDataSource:
+              URL: jdbc:h2:mem:bank_customer_db;DB_CLOSE_ON_EXIT=FALSE
+              driver: org.h2.Driver
+              user: sa
+              password:
+          scheduler:
+            instanceName: coreScheduler
+            startupDelay: "0"
+            instanceId: AUTO
+            idleWaitTime: "10000"
+            autoStartup: "true"
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            misfireThreshold: "60000"
+            maxMisfiresToHandleAtATime: "10"
+            isClustered: true
+            useProperties: true
+            dataSource: quartzDataSource
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: "4"
+            threadPriority: "5"
 springdoc:
   pathsToMatch: /api/**/v1/**
   swagger-ui:

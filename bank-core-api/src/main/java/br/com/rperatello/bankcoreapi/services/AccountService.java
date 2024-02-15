@@ -22,7 +22,6 @@ import br.com.rperatello.bankcoreapi.mapper.Mapper;
 import br.com.rperatello.bankcoreapi.model.Account;
 import br.com.rperatello.bankcoreapi.model.AccountBalanceUpdateModel;
 import br.com.rperatello.bankcoreapi.model.AccountUpdatesAllowed;
-import br.com.rperatello.bankcoreapi.model.TransactionMethod;
 import br.com.rperatello.bankcoreapi.model.TransactionType;
 import br.com.rperatello.bankcoreapi.model.builder.AccountBuilder;
 import br.com.rperatello.bankcoreapi.repositories.IAccountRepository;

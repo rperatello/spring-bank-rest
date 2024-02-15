@@ -105,7 +105,6 @@ public class TransactionService implements ITransactionService {
 		transactionRepository.save(transactionReceived);
 		if(transactionReceived.getPayerBalanceModel() != null && !transactionReceived.getTransactionMethod().equals(TransactionMethod.DEPOSIT)) { 
 			var payerNotification = generateAccountTransactionNotification(transactionReceived.getPayerBalanceModel(), transactionReceived.getId(), transactionReceived.getDateTime());
-			logger.info(String.format("Entrou Payer Notification | %s", GsonUtil.Serialize(payerNotification)));
 			notificationService.sentCustomerTransactionNotification(payerNotification);
 		}
 		var payeeNotification = generateAccountTransactionNotification(transactionReceived.getPayeeBalanceModel(), transactionReceived.getId(), transactionReceived.getDateTime());	
