@@ -4,6 +4,8 @@ import java.util.Date;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import br.com.rperatello.bankcoreapi.exceptions.DatabaseActionException;
 import br.com.rperatello.bankcoreapi.exceptions.ExceptionResponse;
+import br.com.rperatello.bankcoreapi.exceptions.InvalidJwtAuthenticationException;
 import br.com.rperatello.bankcoreapi.exceptions.InvalidRequestException;
 import br.com.rperatello.bankcoreapi.exceptions.RequiredObjectIsNullException;
 import br.com.rperatello.bankcoreapi.exceptions.ResourceNotFoundException;
@@ -54,6 +57,18 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 				request.getDescription(false));
 		
 		return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler({ InvalidJwtAuthenticationException.class, BadCredentialsException.class, UsernameNotFoundException.class })
+	public final ResponseEntity<ExceptionResponse> handleUnauthorizedExceptions(
+			Exception ex, WebRequest request) {
+		
+		ExceptionResponse exceptionResponse = new ExceptionResponse(
+				new Date(),
+				ex.getMessage(),
+				request.getDescription(false));
+		
+		return new ResponseEntity<>(exceptionResponse, HttpStatus.UNAUTHORIZED);
 	}
 
 }
